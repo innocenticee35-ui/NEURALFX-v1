@@ -140,7 +140,33 @@ function openTrade(){
     "Demo trade opened. No MT5 order was sent.";
 }
 
-function closeTrade(id){let t=trades.find(x=>x.id===id);if(!t||t.status!=="OPEN")return;t.status="CLOSED";t.result=0;save();render()}
+
+function closeTrade(id){
+  let t=trades.find(x=>x.id===id);
+
+  if(!t||t.status!=="OPEN")return;
+
+  const result=Number(
+    prompt("Enter demo profit or loss amount:")
+  );
+
+  if(!Number.isFinite(result)){
+    alert("Invalid demo result.");
+    return;
+  }
+
+  t.result=result;
+  t.status="CLOSED";
+
+  balance+=result;
+
+  save();
+  render();
+
+  $("tradeMsg").textContent=
+    "Demo trade closed. Balance updated.";
+}
+
 function resetDemo(){if(!confirm("Reset balance and clear demo history?"))return;balance=Number($("startBalance").value);trades=[];save();render()}
 function toggleBot(){bot=!bot;$("botStatus").textContent=bot?"Demo bot simulation enabled. No real signals or orders.":"Bot stopped."}
 
