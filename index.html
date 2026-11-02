@@ -73,7 +73,59 @@ function fillPairs(){for(let id of ["pair","marketPair"]){let s=$(id);PAIRS.forE
 function showPage(name){["dashboard","markets","account","history","bot"].forEach(x=>$(x).classList.toggle("hidden",x!==name));if(name==="dashboard"||name==="markets")updateCharts()}
 function chart(symbol){let interval=$("tf").value;let src="https://www.tradingview.com/widgetembed/?symbol="+encodeURIComponent(symbol)+"&interval="+encodeURIComponent(interval)+"&theme=dark&style=1&locale=en&toolbar_bg=%230b1019&hide_top_toolbar=false&allow_symbol_change=true&save_image=false&withdateranges=true&hide_side_toolbar=false&details=true&hotlist=false&calendar=false";return '<iframe loading="lazy" title="TradingView chart" src="'+src+'"></iframe>'}
 function updateCharts(){$("dashChart").innerHTML=chart($("pair").value);$("marketChart").innerHTML=chart($("marketPair").value)}
-function openTrade(){let t={id:Date.now(),symbol:$("marketPair").value,side:$("side").value,lot:Number($("lot").value),status:"OPEN",result:0};trades.unshift(t);save();render();$("tradeMsg").textContent="Demo trade recorded locally. No MT5 order was sent."}
+
+function openTrade(){
+  const symbol=$("marketPair").value;
+  const side=$("side").value;
+  const lot=Number($("lot").value);
+
+  const entry=Number(prompt("Enter demo entry price:"));
+  if(!Number.isFinite(entry)||entry<=0){
+    $("tradeMsg").textContent="Invalid entry price.";
+    return;
+  }
+
+  const sl=Number(prompt("Enter demo stop-loss price:"));
+  if(!Number.isFinite(sl)||sl<=0){
+    $("tradeMsg").textContent="Invalid stop-loss.";
+    return;
+  }
+
+  const tp=Number(prompt("Enter demo take-profit price:"));
+  if(!Number.isFinite(tp)||tp<=0){
+    $("tradeMsg").textContent="Invalid take-profit.";
+    return;
+  }
+
+  if(side==="BUY"&&(sl>=entry||tp<=entry)){
+    alert("BUY: SL must be below entry and TP above entry.");
+    return;
+  }
+
+  if(side==="SELL"&&(sl<=entry||tp>=entry)){
+    alert("SELL: SL must be above entry and TP below entry.");
+    return;
+  }
+
+  trades.unshift({
+    id:Date.now(),
+    symbol,
+    side,
+    lot,
+    entry,
+    sl,
+    tp,
+    status:"OPEN",
+    result:0
+  });
+
+  save();
+  render();
+
+  $("tradeMsg").textContent=
+    "Demo trade opened. No MT5 order was sent.";
+}
+
 function closeTrade(id){let t=trades.find(x=>x.id===id);if(!t||t.status!=="OPEN")return;t.status="CLOSED";t.result=0;save();render()}
 function resetDemo(){if(!confirm("Reset balance and clear demo history?"))return;balance=Number($("startBalance").value);trades=[];save();render()}
 function toggleBot(){bot=!bot;$("botStatus").textContent=bot?"Demo bot simulation enabled. No real signals or orders.":"Bot stopped."}
