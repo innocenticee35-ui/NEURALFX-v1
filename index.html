@@ -49,7 +49,21 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:12px}
 <section id="markets" class="hidden"><h1>Markets</h1><div class="panel"><select id="marketPair" onchange="updateCharts()"></select><div id="marketChart" class="chart"></div></div>
 <div class="panel"><h2>Record demo trade</h2><p>This records a local simulation only. It does not send an order to iFX or MT5.</p><label>Side</label><select id="side"><option>BUY</option><option>SELL</option></select><label>Demo lot size</label><select id="lot"><option>0.01</option><option>0.02</option><option>0.05</option><option>0.10</option></select><button class="greenbtn" onclick="openTrade()">OPEN DEMO TRADE</button><p id="tradeMsg"></p></div></section>
 <section id="account" class="hidden"><h1>Demo account</h1><div class="panel"><small>Current virtual balance</small><div class="metric" id="accountBalance">$100.00</div><label>Reset balance to</label><select id="startBalance"><option value="100">$100</option><option value="500">$500</option><option value="1000">$1,000</option><option value="5000">$5,000</option><option value="10000">$10,000</option></select><button class="primary" onclick="resetDemo()">RESET DEMO</button><p>Reset clears this profile's demo trades.</p></div></section>
-<section id="history" class="hidden"><h1>Trade history</h1><div class="panel" style="overflow-x:auto"><table><thead><tr><th>Pair</th><th>Side</th><th>Lot</th><th>Status</th><th>Result</th><th></th></tr></thead><tbody id="rows"></tbody></table><p id="empty">No demo trades yet.</p></div></section>
+<section id="history" class="hidden"><h1>Trade history</h1><div class="panel" style="overflow-x:auto"><table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Side</th>
+<th>Lot</th>
+<th>Entry</th>
+<th>SL</th>
+<th>TP</th>
+<th>Status</th>
+<th>Result</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody></table><p id="empty">No demo trades yet.</p></div></section>
 <section id="bot" class="hidden"><h1>NEURALFX Bot</h1><div class="panel"><label>Strategy</label><select id="strategy"><option>Trend + Support/Resistance</option><option>Trend following</option><option>Support/Resistance</option></select><label>Mode</label><select id="botMode"><option>Manual demo</option><option>Automatic demo simulation</option></select><button class="greenbtn" onclick="toggleBot()">START / STOP DEMO BOT</button><p id="botStatus">Bot stopped.</p><p>This control is a UI simulation, not a signal engine or trading robot.</p></div><div class="panel"><h2>iFX MT5 connection</h2><p>Not connected. Android-only GitHub Pages cannot run an MT5 Expert Advisor or securely place broker orders. Real MT5 execution requires a broker-compatible bridge and an MT5 terminal running on a supported computer/VPS.</p></div></section>
 </section>
 </main><footer>NEURALFX V1 · Educational demo</footer>
