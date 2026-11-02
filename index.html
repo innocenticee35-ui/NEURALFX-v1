@@ -129,7 +129,55 @@ function openTrade(){
 function closeTrade(id){let t=trades.find(x=>x.id===id);if(!t||t.status!=="OPEN")return;t.status="CLOSED";t.result=0;save();render()}
 function resetDemo(){if(!confirm("Reset balance and clear demo history?"))return;balance=Number($("startBalance").value);trades=[];save();render()}
 function toggleBot(){bot=!bot;$("botStatus").textContent=bot?"Demo bot simulation enabled. No real signals or orders.":"Bot stopped."}
-function render(){let open=trades.filter(t=>t.status==="OPEN").length,closed=trades.length-open;["balance","equity","accountBalance"].forEach(id=>$(id).textContent=cash(balance));$("openCount").textContent=open;$("closedCount").textContent=closed;$("rows").innerHTML="";trades.forEach(t=>{let tr=document.createElement("tr");let vals=[t.symbol,t.side,t.lot,t.status,cash(t.result)];vals.forEach(v=>{let td=document.createElement("td");td.textContent=v;tr.appendChild(td)});let td=document.createElement("td");if(t.status==="OPEN"){let b=document.createElement("button");b.textContent="Close";b.onclick=()=>closeTrade(t.id);td.appendChild(b)}tr.appendChild(td);$("rows").appendChild(tr)});$("empty").classList.toggle("hidden",trades.length>0)}
+
+function render(){
+  let open=trades.filter(t=>t.status==="OPEN").length;
+  let closed=trades.length-open;
+
+  ["balance","equity","accountBalance"].forEach(id=>{
+    $(id).textContent=cash(balance);
+  });
+
+  $("openCount").textContent=open;
+  $("closedCount").textContent=closed;
+  $("rows").innerHTML="";
+
+  trades.forEach(t=>{
+    let tr=document.createElement("tr");
+
+    let vals=[
+      t.symbol,
+      t.side,
+      t.lot,
+      t.entry,
+      t.sl,
+      t.tp,
+      t.status,
+      cash(t.result)
+    ];
+
+    vals.forEach(v=>{
+      let td=document.createElement("td");
+      td.textContent=v;
+      tr.appendChild(td);
+    });
+
+    let td=document.createElement("td");
+
+    if(t.status==="OPEN"){
+      let b=document.createElement("button");
+      b.textContent="Close";
+      b.onclick=()=>closeTrade(t.id);
+      td.appendChild(b);
+    }
+
+    tr.appendChild(td);
+    $("rows").appendChild(tr);
+  });
+
+  $("empty").classList.toggle("hidden",trades.length>0);
+}
+
 fillPairs();
 </script>
 </body>
